@@ -1,0 +1,9 @@
+server:
+  port: 7000
+  
+spring:
+  mvc:
+    view:
+      prefix: /WEB-INF/view/
+      
+      suffix: 
