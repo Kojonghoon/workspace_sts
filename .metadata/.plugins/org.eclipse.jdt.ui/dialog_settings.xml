@@ -27,4 +27,7 @@
 	</section>
 	<section name="quick_assist_proposal_size">
 	</section>
+	<section name="SelfEncapsulateFieldWizard">
+		<item key="GenerateJavadoc" value="false"/>
+	</section>
 </section>
