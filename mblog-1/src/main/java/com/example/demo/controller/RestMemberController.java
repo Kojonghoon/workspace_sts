@@ -29,6 +29,16 @@ public class RestMemberController {
 		rmap.put("mem_pw", "123");
 		rmap.put("mem_name", "토마토");
 		mList.add(rmap);
+		rmap = new HashMap<>();
+		rmap.put("mem_id", "banan");
+		rmap.put("mem_pw", "123");
+		rmap.put("mem_name", "바나나");
+		mList.add(rmap);
+		rmap = new HashMap<>();
+		rmap.put("mem_id", "kiwi");
+		rmap.put("mem_pw", "123");
+		rmap.put("mem_name", "키위");
+		mList.add(rmap);
 		Gson g = new Gson();
 		temp = g.toJson(mList);
 		return temp;

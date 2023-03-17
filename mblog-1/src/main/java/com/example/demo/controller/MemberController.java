@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -31,8 +32,12 @@ public class MemberController {
 	}
 
 	@GetMapping("memberList")
-	public String memberList(Model model) {
+	public String memberList(Model model, @RequestParam Map<String, Object> pMap) {
 		logger.info("MemberController : memberList 호출");
-		return "member/memberList";
+		List<Map<String, Object>> mList = null;
+		mList = memberLogic.memberList(pMap);
+		model.addAttribute("mList", mList);
+		//localhost:8000/jstl/memberAction.jsp[webapp]
+		return "forward:/jstl/memberAction.jsp";
 	}
 }

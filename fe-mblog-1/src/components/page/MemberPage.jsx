@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { jsonMemberListDB, memberListDB } from '../../service/dbLogic'
+import { jsonMemberListDB} from '../../service/dbLogic'
 
 const MemberPage = () => {
     const [member, setMember] = useState({})
