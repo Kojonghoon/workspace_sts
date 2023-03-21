@@ -1,12 +1,21 @@
 import { Route, Routes } from "react-router-dom";
-import "./App.css";
+import LoginPage from "./components/auth/LoginPage";
+import DeptPage from "./components/page/DeptPage";
+import HomePage from "./components/page/HomePage";
 import MemberPage from "./components/page/MemberPage";
+import KakaoRedirectHandler from "./kakao/KakaoRedirectHandler";
+import Profile from "./kakao/Profile";
 
-function App() {
+function App({imageUploader}) {
   return (
     <>
       <Routes>
-        <Route path='/member' exact={true} element={<MemberPage/>}/>
+        <Route path='/dept' exact={true} element={<DeptPage/> } />
+        <Route path='/home' exact={true} element={<HomePage/> } />
+        <Route path='/profile' exact={true} element={<Profile/> } />
+        <Route path='/' exact={true} element={<LoginPage/> } />
+        <Route path='/auth/kakao/callback' exact={true} element={<KakaoRedirectHandler/> } />
+        <Route path='/member' exact={true} element={<MemberPage imageUploader ={imageUploader}/>}/>
       </Routes>
     </>
   );
