@@ -1,16 +1,24 @@
 // 상태는 createStore() 안에 있음
-const createStore = () => {
+// 상태를 담을 변수 선언
+// 콜백함수를 담을 배열 선언
+// send 함수 구현 - 파라미터 action
+// 구독발행모델 - subscribe(handler-콜백함수)
+// subscribe를 통해서 들어온 콜백함수는 handlers배열에 담긴다.
+// getState함수를 통해서 state값을 반환 받음
+// return{send, subscribe, getState}
+const createStore = () => { // 배치위치는 index.js배치 - store 생성
   let state; // 상태를 담아두는 저장소
   let handlers = []; // 함수를 담아두는 배열 선언
-  // 상태를 바꾸는 일을 send 함수가 실행
+  // 상태를 바꾸는 일을 send 함수가 실행 - useSelector훅 
   const send = (action) => {
     console.log("send 호출");
     // 새로운 객체가 만들어짐
     state = worker(state, action);
-    handlers.forEach((handler) => handler());
+    //나에게 구독 신청한 사람들에게 모두 알림
+    handlers.forEach((handler) => handler());//전달받은 함수를 호출해줘
   };
 
-  const subscribe = (handler) => {
+  const subscribe = (handler) => {  //handler - 콜백함수 // useDispatch훅
     handlers.push(handler);
     console.log(store.getState());
   };
@@ -26,9 +34,10 @@ const createStore = () => {
     getState, // 상태 정보를 담은 state 반환
     subscribe,
   };
-};
+}; // end of store
 
 //react-redux에서는 worker가 Dispacher가 됨
+//reducer, dispatch함수
 const worker = (state = { count: 0 }, action) => {
   // state가 undefined 되는 것을 방지하기 위해 객체 선언
   // 무엇을 해야 해 ???
@@ -38,7 +47,7 @@ const worker = (state = { count: 0 }, action) => {
   // 기존의 참조 끊음 - 그래야 side effect방지 가능
   switch (action.type) {
     case "increase":
-      return { ...state, count: state.count + 1 };
+      return { ...state, count: state.count + 2 };
     case "decrease":
       return { ...state, count: state.count - 1 };
     default:
@@ -55,6 +64,9 @@ store.subscribe(function () {
   console.log(store.getState());
 });
 
+// action의 내용은 send에서 만듦
+// 사용자가 버튼을 클릭했을 때 시그널 발생함 - type정해서 value를 store에 전달함
+// store가 받아서 전변으로 관리됨 - G컴퐅넌트에서 즉시 바로 사용가능함
 store.send({ type: "increase" });   //시그널 주기 - action
 store.send({ type: "increase" });   
 store.send({ type: "decrease" });

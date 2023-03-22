@@ -10,7 +10,7 @@ function App({imageUploader}) {
   return (
     <>
       <Routes>
-        <Route path='/dept' exact={true} element={<DeptPage/> } />
+        <Route path='/dept/:gubun' element={<DeptPage imageUploader={imageUploader}/> } />
         <Route path='/home' exact={true} element={<HomePage/> } />
         <Route path='/profile' exact={true} element={<Profile/> } />
         <Route path='/' exact={true} element={<LoginPage/> } />
