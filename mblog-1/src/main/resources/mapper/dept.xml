@@ -13,8 +13,14 @@
 
 	<update id="deptUpdate" parameterType="map">
 		UPDATE dept
-		set dname = #{dname}
-		,loc = #{loc}
+			set dname = #{dname}
+			,loc = #{loc}
+		<if test="filename != null">
+			,filename = #{filename}
+		</if>
+		<if test="fileurl != null">
+			,fileurl = #{fileurl}
+		</if>
 		<where>
 			<if test='deptno!=null and deptno>0'>
 				AND deptno = #{deptno}

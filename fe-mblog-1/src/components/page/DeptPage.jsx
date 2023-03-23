@@ -1,12 +1,31 @@
 import React, { useCallback, useEffect, useState } from 'react'
-   import { Button, Modal, Table, Form } from 'react-bootstrap'
+import { Button, Form, Modal, Table } from 'react-bootstrap'
 import { useNavigate, useParams } from 'react-router-dom'
-   import { deptInsertDB, deptListDB } from '../../service/dbLogic'
+import styled from 'styled-components'
+import { deptInsertDB, deptListDB } from '../../service/dbLogic'
 import { validateDname } from '../../service/validateLogic'
-   import '../css/style.css'
-   import DeptRow from '../dept/DeptRow'
-   import BlogHeader from '../include/BlogHeader'
+import '../css/style.css'
+import DeptRow from '../dept/DeptRow'
+import BlogFooter from '../include/BlogFooter'
+import BlogHeader from '../include/BlogHeader'
 import { MyInput, MyLabel, MyLabelAb } from '../styles/FormStyle'
+
+const DivUploading = styled.div`
+   display: flex;
+   width : 200px;
+   height :250px;
+   overflow:hidden;
+   margin:10px auto;
+`
+
+const img = styled.img`
+   width : 100%;
+   height : 100%;
+   object-fit:cover;
+
+`
+
+
    const DeptPage = ({imageUploader}) => {
       //화면 전환시나 가급적 전체 페이지 리로딩을 하지 않음
       //Navigate훅을 사용하면 됨
@@ -15,7 +34,7 @@ import { MyInput, MyLabel, MyLabelAb } from '../styles/FormStyle'
       //디폴트 없고 부서등록이 성공하면 1을 돌려줌
       const gubun = useParams()
       const [deptList, setDeptList] = useState([])
-      const[show, setShow]=useState(false)
+      const [show, setShow]=useState(false)
       const handleClose=()=>setShow(false)
       const handleShow=()=>setShow(true)
       const [deptno, setDeptno] = useState(0)
@@ -50,6 +69,7 @@ import { MyInput, MyLabel, MyLabelAb } from '../styles/FormStyle'
             setStar({...star,[key]:''})
          }
       }
+      
       const handleDeptno = useCallback((value)=>{
          console.log(value)
          setDeptno(value)
@@ -137,7 +157,7 @@ import { MyInput, MyLabel, MyLabelAb } from '../styles/FormStyle'
             //부서목록 새로고침 처리
             navigate("/dept/1")
          }
-      }
+      }  //end of deptInsert
       useEffect(()=>{
          jsonDeptList()
       },[gubun]) //의존성 배열이 빈 배열이면 최초 한 번만
@@ -225,10 +245,12 @@ import { MyInput, MyLabel, MyLabelAb } from '../styles/FormStyle'
                   <Form.Label>건물이미지</Form.Label>
                   <input className="form-control" type="file" accept='image/*' id="dimg" name="dimg" onChange={imgChange}/>
             </Form.Group>
-            <div id="uploadImg">
-                  <img className='thumbNail' src="http://via.placeholder.com/200X250" alt="미리보기" />
+
+            <DivUploading id="uploadImg">
+                  <img src="http://via.placeholder.com/200X250" alt="미리보기" />
+            </DivUploading>
             </div>
-            </div>
+
             </Modal.Body>
             <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
@@ -240,6 +262,7 @@ import { MyInput, MyLabel, MyLabelAb } from '../styles/FormStyle'
             </Modal.Footer>
          </Modal>
          {/* ========================== [[ 부서등록 Modal ]] ========================== */}
+         <BlogFooter/>
       </React.Fragment>
    )
    }

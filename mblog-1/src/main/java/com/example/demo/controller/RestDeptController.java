@@ -34,7 +34,7 @@ public class RestDeptController {
 	 *****************************************************/
 	// 단위 테스트 url은
 	// => http://localhost:8000/dept.deptInsert 이나 테스트는 불가함
-	@PostMapping("deptInsert")
+	@GetMapping("deptInsert")
 	public String deptInsert(@RequestBody DeptVO pdVO) {
 		logger.info(pdVO.toString());
 		int result = 0;
@@ -42,7 +42,7 @@ public class RestDeptController {
 		return String.valueOf(result);
 	}
 
-	@PutMapping("deptUpdate")
+	@PostMapping("deptUpdate")
 	public String deptUpdate(@RequestBody DeptVO pdVO) {
 		logger.info(pdVO.toString());
 		int result = 0;
@@ -50,7 +50,7 @@ public class RestDeptController {
 		return String.valueOf(result);
 	}
 
-	@DeleteMapping("deptDelete")
+	@GetMapping("deptDelete")
 	public String deptDelete(int deptno) {
 		logger.info("사용자가 선택한 부서번호 - 단 자손이 없어야 한다." + deptno);
 		int result = 0;

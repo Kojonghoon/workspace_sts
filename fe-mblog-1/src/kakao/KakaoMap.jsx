@@ -51,11 +51,11 @@ const KakaoMap = () => {
   }, [positions, map])
   return (
     <>
+      <div> 카카오맵존 </div>
     <div style={{display:"flex", alignItems:"center", justifyContent:"space-around"}}>
       <div id="map" ref={kakaomap} style={{width:"600px", height:"400px", marginBottom:"20px", border:"2px solid lightgrey", borderRadius:"20px"}}></div>
-      <BButton type ='button'text>현재위치</BButton>
     </div>
-    카카오맵존
+      <BButton type ='button'text>현재위치</BButton>
     </>
   )
 }

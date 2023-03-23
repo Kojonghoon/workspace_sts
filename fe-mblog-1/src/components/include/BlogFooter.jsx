@@ -1,11 +1,19 @@
-import React from 'react'
+import React from "react";
+import { Navbar } from "react-bootstrap";
 
 const BlogFooter = () => {
   return (
-    <div>
-    바닥글
-    </div>
-  )
-}
+    <>
+      <Navbar
+        fixed="bottom"
+        className="navbar navbar-expand-sm bg-light justify-content-center"
+        bg="dark"
+        style={{ color: "white" }}
+      >
+        자바캠프 Copyright &copy;2023
+      </Navbar>
+    </>
+  );
+};
 
-export default BlogFooter
+export default BlogFooter;

@@ -25,7 +25,7 @@ const Profile = () => {
       setNickName(data.properties.nickname);
       window.localStorage.setItem("nickname", nickName);
       setProfileImage(data.properties.profile_image);
-      navigate("/")
+      navigate("/home")
     } catch (error) {
       console.log(error);
     }
