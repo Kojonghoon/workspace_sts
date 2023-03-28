@@ -1,9 +1,22 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
+import { legacy_createStore } from "redux";
 import App from "./App";
+import rootReducer from "./redux/rootReducer";
+import { setAuth } from "./redux/userAuth/action";
+import AuthLogic from "./service/authLogic";
+import firebaseApp from "./service/firebase";
 import ImageUploader from "./service/ImageUploader";
+//리덕스 적용하기
+const store = legacy_createStore(rootReducer);
+//AuthLogic 객체 생성하기
+const authLogic = new AuthLogic(firebaseApp);
+//store에 있는 초기 상태 정보 출력하기
+store.dispatch(setAuth(authLogic.getUserAuth(), authLogic.getGoogleAuthProvider()))
+console.log(store.getState())
 //이미지 업로더 객체 생성
 const imageUploader = new ImageUploader();
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -11,8 +24,10 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 //createStore호출
 root.render(
   <>
-    <BrowserRouter>
-      <App imageUploader={imageUploader} />
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <App imageUploader={imageUploader} />
+      </BrowserRouter>
+    </Provider>
   </>
 );

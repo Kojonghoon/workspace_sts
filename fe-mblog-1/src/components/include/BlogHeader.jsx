@@ -7,14 +7,14 @@ import { Link } from "react-router-dom";
 const BlogHeader = () => {
   return (
     <>
-      <Navbar bg="light">
+      <Navbar bg="black">
         <Container fluid>
-          <Link to="/" className="nav-link">TerrGYM</Link>
+          <Link to="/" className="nav-link"style={{color:"white"}}>TerrGYM</Link>
           <Nav className="me-auto">
-            <Link to="/home" className="nav-link">Home</Link>
-            <Link to="/dept/0" className="nav-link">부서관리</Link>
-            <Link to="/repleboard" className="nav-link">게시판</Link>
-          </Nav>ㄷ
+            <Link to="/home" className="nav-link" style={{color:"white"}}>Home</Link>
+            <Link to="/dept/0" className="nav-link" style={{color:"white"}}>부서관리</Link>
+            <Link to="/repleboard" className="nav-link"style={{color:"white"}}>게시판</Link>
+          </Nav>
         </Container>
       </Navbar>
     </>
