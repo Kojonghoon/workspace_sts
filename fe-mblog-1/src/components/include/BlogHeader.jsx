@@ -13,7 +13,7 @@ const BlogHeader = () => {
           <Nav className="me-auto">
             <Link to="/home" className="nav-link" style={{color:"white"}}>Home</Link>
             <Link to="/dept/0" className="nav-link" style={{color:"white"}}>부서관리</Link>
-            <Link to="/repleboard" className="nav-link"style={{color:"white"}}>게시판</Link>
+            <Link to="/reple/board" className="nav-link"style={{color:"white"}}>게시판</Link>
           </Nav>
         </Container>
       </Navbar>

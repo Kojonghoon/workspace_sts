@@ -1,4 +1,6 @@
+/* global daum */
 import React, { useCallback, useState } from "react";
+import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { memberInsertDB } from "../../service/dbLogic";
 import { BButton, ContainerDiv, FormDiv, HeaderDiv } from "../styles/FormStyle";
@@ -8,13 +10,21 @@ const Signup = () => { // 컴포넌트 함수
     //함수형 프로그래밍에 대한 이점으로 훅을 지원하게 되었다.
     const navigate = useNavigate();
     const [mem_uid, setMemuid ] = useState('')
-    const [mem_pw, setMemupw ] = useState('')
-    const [mem_name, setMemuname ] = useState('')
-    const [mem_nickname, setMemunickname ] = useState('')
-    const [mem_email, setMemuemail ] = useState('')
-    const [mem_tel, setMemutel ] = useState('')
-    const [mem_gender, setMemugender ] = useState('')
-    const [mem_birthday, setMemubirthday ] = useState('')
+    const [mem_pw, setMempw ] = useState('')
+    const [mem_name, setMemname ] = useState('')
+    const [mem_nickname, setMemnickname ] = useState('')
+    const [mem_email, setMememail ] = useState('')
+    const [mem_tel, setMemtel ] = useState('')
+    const [mem_gender, setMemgender ] = useState('')
+    const [mem_birthday, setMembirthday ] = useState('')
+    const [mem_zipcode, setMemZipcode ] = useState('')
+    const [mem_addr, setMemAddr ] = useState('')
+    const [mem_addrdtl, setMemAddrdtl ] = useState('')
+    const [post, setPost ] = useState({
+      zipcode:"",
+      addr:"",
+      addrdtl:"",
+    })
     //Post, @RequestBody, {} -> Map or Vo -> 비동기처리 ->Promise(resolve, reject)
     //async - await
     const memberInsert =async()=>{
@@ -27,6 +37,9 @@ const Signup = () => { // 컴포넌트 함수
             mem_gender:mem_gender,
             mem_birthday:mem_birthday,
             mem_tel:mem_tel,
+            // mem_zipcode:mem_zipcode,
+            // mem_addr:mem_addr,
+            // mem_addr_dtl:mem_addr_dtl,
         }
         const res = await memberInsertDB(member)
         console.log(res+","+res.data)
@@ -35,7 +48,7 @@ const Signup = () => { // 컴포넌트 함수
         }
         else{
             console.log('회원 가입 성공')
-            //회원가입 성곳ㅇ시 로그인 화면으로 이동
+            //회원가입 성공시 로그인 화면으로 이동
             navigate("/login")
          }
       }  //end of deptInsert
@@ -43,28 +56,59 @@ const Signup = () => { // 컴포넌트 함수
 
     const handleID = useCallback((e)=>{
         setMemuid(e)
-    })
+    },[])
     const handlePW = useCallback((e)=>{
-        setMemupw(e)
-    })
+        setMempw(e)
+    },[])
     const handleName = useCallback((e)=>{
-        setMemuname(e)
-    })
+        setMemname(e)
+    },[])
     const handleNickname = useCallback((e)=>{
-        setMemunickname(e)
-    })
+        setMemnickname(e)
+    },[])
     const handleEmail = useCallback((e)=>{
-        setMemuemail(e)
-    })
+        setMememail(e)
+    },[])
     const handleTel = useCallback((e)=>{
-        setMemutel(e)
-    })
+        setMemtel(e)
+    },[])
     const handleGender = useCallback((e)=>{
-        setMemugender(e)
-    })
+        setMemgender(e)
+    },[])
     const handleBirthday = useCallback((e)=>{
-        setMemubirthday(e)
-    })
+        setMembirthday(e)
+    },[])
+    const handleZipcdoe = useCallback((e)=>{
+        setMemZipcode(e)
+    },[])
+    const handleAddr = useCallback((e)=>{
+        setMemAddr(e)
+    },[])
+    const handleAddrDtl = useCallback((e)=>{
+        setMemAddrdtl(e)
+    },[])
+
+    const clickAddr =(event)=>{
+      event.preventDefault()
+      new daum.Postcode({
+        oncomplete: function(data) {
+          let addr=''
+          if(data.userSelectedType==='R'){
+            addr=data.roadAddress;  //도로명
+          }
+          else{
+            addr=data.jibunAddress; //도로명
+          }
+          console.log(data) //전체 주소 정보 - 한글 + 영어
+          console.log(addr) //주소정보만
+          setPost({...post, zipcode:data.zonecode,addr:addr}) //깊은복사
+          document.querySelector("#mem_zipcode").value=data.zonecode //화면에 자동으로 입력처리
+          document.querySelector("#mem_addr").value=addr  //선택한 주소정보를 imput 컴포넌트에 자동입력 처리
+          document.querySelector("#mem_addr_dtl").focus() // addr이 입력 되었을 떄 커서 자도 ㅇ이동처리
+        }
+    }).open();
+    }
+
   return (
     <>
       <ContainerDiv>
@@ -128,9 +172,27 @@ const Signup = () => { // 컴포넌트 함수
             <input id="mem_birthday" type="text" maxLength="50" placeholder="생일을 입력하세요."
               style={{width: "200px",height: "40px",border: "1px solid lightGray", marginBottom: "5px",}} onChange={(e)=>{handleBirthday(e.target.value)}}/>
             
+            <div style={{display: "flex",justifyContent: "space-between", marginBottom: "5px", }} >
+              <h4>우편번호</h4>
+            </div>
+            <input id="mem_zipcode" type="text" maxLength="50" placeholder="우편번호 입력."
+              style={{width: "200px",height: "40px",border: "1px solid lightGray", marginBottom: "5px",}} onChange={(e)=>{handleZipcdoe(e.target.value)}}/>
             
-                
-              <div style={{ display: "flex", justifyContent: "space-between",  marginBottom: "5px", }} >
+            <div style={{display: "flex",justifyContent: "space-between", marginBottom: "5px", }} >
+              <h4>주소입력</h4>
+            </div>
+            <input id="mem_addr" type="text" maxLength="50" placeholder="우편번호 입력."
+              style={{width: "200px",height: "40px",border: "1px solid lightGray", marginBottom: "5px",}} onChange={(e)=>{handleAddr(e.target.value)}}/>
+            
+            <div style={{display: "flex",justifyContent: "space-between", marginBottom: "5px", }} >
+              <h4>상세주소</h4>
+            </div>
+            <input id="mem_addr_dtl" type="text" maxLength="50" placeholder="상세주소를 입력사에요." readOnly={post.addr?false:true}
+              style={{width: "350px",height: "40px",border: "1px solid lightGray", marginBottom: "5px",}} onChange={(e)=>{handleAddrDtl(e.target.value)}}/>
+              <Button onClick={clickAddr}>주소검색</Button>
+
+
+            <div style={{ display: "flex", justifyContent: "space-between",  marginBottom: "5px", }} >
               <hr style={{ margin: "10px 0px 10px 0px" }} />
             </div>
                 <BButton onClick={memberInsert}>가입</BButton>

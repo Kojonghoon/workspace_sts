@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, Table } from 'react-bootstrap'
-import BlogFooter from '../components/include/BlogFooter'
-import BlogHeader from '../components/include/BlogHeader'
+import BlogFooter from '../include/BlogFooter'
+import BlogHeader from '../include/BlogHeader'
 
 const RepleBoardPage = () => {
   const boardSearch=()=>{

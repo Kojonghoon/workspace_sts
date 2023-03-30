@@ -1,5 +1,5 @@
 let global = -99//전역변수
-
+//아무런 변화도 없었다 
 function func1(){
     let num =0  //지역변수
     return num

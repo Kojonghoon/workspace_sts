@@ -1,4 +1,21 @@
 import axios from "axios";
+/* ================board시작================= */
+/* export const boardInsertDB = (board) => {
+  return new Promise((resolve, reject) => {
+    try {
+      console.log("memberInsertDB" + board);
+      const response = axios({
+        method: "post", //@RequestBody
+        url: process.env.REACT_APP_SPRING_IP + "board/board",
+        data: board, //post방식으로 전송시 반드시 data속성으로 ㅈ파라미터 줄것
+      });
+      resolve(response);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+ */
 /* ================member시작================ */
 export const memberInsertDB = (member) => {
   return new Promise((resolve, reject) => {

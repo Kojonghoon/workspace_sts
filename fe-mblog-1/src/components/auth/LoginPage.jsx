@@ -1,60 +1,116 @@
-import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { Link, useNavigate } from 'react-router-dom'
-import { setToastMsg } from '../../redux/toastStatus/action'
-import { loginGoogle } from '../../service/authLogic'
-import './loginpage.css'
-
-const LoginPage = () => {
-  const navigate =useNavigate()
-  //One-Way 바인딩에서 액선을 스토어에 전달할 때 디스패치 사용함
-  const dispatch = useDispatch()
-  //store에 초기화된 state안에 담긴 data꺼내 올때 사용
-  const userAuth = useSelector(store=>store.userAuth)
-  const auth = useSelector((store)=>store.userAuth.auth)
-  console.log(auth)
-  const googleProvider = useSelector((store)=>store.userAuth.googleProvider)
-  console.log(googleProvider)
-    const handleGoogle = async(event) => {
-      event.preventDefault()
-      try {
-        const result = await loginGoogle(auth, googleProvider)
-        console.log(result.uid)
-        window.sessionStorage.setItem('userId', result.uid)
-        navigate('/')
-
-      } catch (error) {
-        console.log(error)
-        dispatch(setToastMsg(error+': 로그인 오류 입니다.')) //[object, object] -> JSON.stringify()
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { loginEmail, loginGoogle } from '../../service/authLogic';
+import { DividerDiv, DividerHr, DividerSpan, GoogleButton, LoginForm, MyH1, MyInput, MyLabel, MyP, PwEye, SubmitButton } from '../styles/FormStyle';
+const KhLoginPage = ({authLogic}) => {
+  const navigate = useNavigate() // a태그 사용 금지 Link(react-router-) 사용
+  console.log('LoginPage');
+  const auth = authLogic.getUserAuth()
+  const[submitBtn, setSubmitBtn] = useState({
+    disabled: true,
+    bgColor: 'rgb(175, 210, 244)',
+    hover: false
+  });
+  const [tempUser, setTempUser] = useState({
+    email: '',
+    password: ''
+  });
+  const [passwordType, setPasswordType] = useState({
+      type:'password',
+      visible:false
+  });
+  useEffect(()=> {
+    if(tempUser.email!==""&&tempUser.password!==""){
+      setSubmitBtn({disabled:false, bgColor: 'rgb(105, 175, 245)'});
+    } else {
+      setSubmitBtn({disabled:true, bgColor: 'rgb(175, 210, 244)'});
+    }
+  },[tempUser]);
+  const changeUser = (e) => {
+    const id = e.currentTarget.id;
+    const value = e.target.value;
+    setTempUser({...tempUser, [id]: value});
+  };
+  const passwordView = (e) => {
+    const id = e.currentTarget.id;
+    if(id==="password") {
+      if(!passwordType.visible) {
+        setPasswordType({...passwordType, type: 'text', visible: true});
+      } else {
+        setPasswordType({...passwordType, type: 'password', visible: false});
       }
-    } //end of handleGoogle
+    }
+  };
+  const toggleHover = () => {
+    if(submitBtn.hover){
+      setSubmitBtn({...submitBtn, hover: false, bgColor: 'rgb(105, 175, 245)'});
+    } else {
+      setSubmitBtn({...submitBtn, hover: true, bgColor: 'rgb(58, 129, 200)'});
+    }
+  }
+  const loginE = async () => {
+    // 이메일 로그인 구현
+    console.log(tempUser)
+    try {
+      const result = await loginEmail(auth, tempUser)
+      console.log(result)
+      console.log(result.user.uid)
+      window.sessionStorage.setItem('userId', result.user.uid)
+      window.localStorage.setItem('userId', result.user.uid)
+      window.localStorage.setItem('member', JSON.stringify({mem_id:'test', mem_pw:'123'}))
+      // 여기서 바라보고 있는 URL => /login
+      // 문제 제기 : 세션 스토리지 유지 ???
+      navigate("/") // Route path="/" > HomePage
+      window.location.reload()
+    } catch (error) {
+      console.log(error + ": 로그인 에러입니다");
+    }
+  }
+  // 구글 로그인 구현
+  const loginG = async () => {
+    try {
+      const result = await loginGoogle(authLogic.getUserAuth(), authLogic.getGoogleAuthProvider())
+      console.log(result.data)
+      console.log(result)
+      window.sessionStorage.setItem('userId', result.uid)
+      window.localStorage.setItem('userId', result.uid)
+      // navigate("/")
+      window.location.reload()
+    } catch (error) {
+      console.log('로그인 오류입니다')
+    }
+  }
   return (
     <>
-    <div className="bg"></div>
-    <form className="login__form" action="">
-      <h1>로그인</h1>
-      <p>신규 사용자이신가요? <Link to="#">계정 만들기</Link></p>
-      <label htmlFor="useremail">이메일 주소
-        <input type="email" id="useremail" placeholder="이메일 주소를 입력해주세요."/>
-      </label>
-      <input type="submit" className="btn__submit" value="계속" />
-      <div className="divider">
-        <hr />
-        <span>또는</span>
-      </div>
-      <button className="btn__google" onClick={handleGoogle}>
-        <i className="icon icon-google"></i>Google으로 계속
-      </button>
-      <button className="btn__facebook">
-        <i className="icon icon-facebook"></i>Facebook으로 계속
-      </button>
-      <p className="captcha__text">
-        reCAPTCHA로 보호되며 Google <Link to="#">개인정보보호 정책</Link> 및
-        <Link to="#">서비스 약관</Link>의 적용을 받습니다.
-      </p>
-      </form>
+      <LoginForm>
+        <MyH1>로그인</MyH1>
+        <MyLabel htmlFor="email"> 이메일
+          <MyInput type="email" id="email" name="mem_email" placeholder="이메일를 입력해주세요."
+            onChange={(e)=>changeUser(e)}/>
+        </MyLabel>
+        <MyLabel htmlFor="password"> 비밀번호
+          <MyInput type={passwordType.type} autoComplete="off" id="password" name="mem_password" placeholder="비밀번호를 입력해주세요."
+            onChange={(e)=>changeUser(e)}/>
+          <div id="password" onClick={(e)=> {passwordView(e)}} style={{color: `${passwordType.visible?"gray":"lightgray"}`}}>
+            <PwEye className="fa fa-eye fa-lg"></PwEye>
+          </div>
+        </MyLabel>
+        <SubmitButton type="button"  disabled={submitBtn.disabled} style={{backgroundColor:submitBtn.bgColor}}
+          onMouseEnter={toggleHover} onMouseLeave={toggleHover} onClick={()=>{loginE()}}>
+          로그인
+        </SubmitButton>
+        <DividerDiv>
+          <DividerHr />
+          <DividerSpan>또는</DividerSpan>
+        </DividerDiv>
+        <GoogleButton type="button" onClick={()=>{loginG();}}>
+          <i className= "fab fa-google-plus-g" style={{color: "red", fontSize: "18px"}}></i>&nbsp;&nbsp;Google 로그인
+        </GoogleButton>
+        <MyP style={{marginTop:"30px"}}>신규 사용자이신가요?&nbsp;<Link to="/auth/signup" className="text-decoration-none" style={{color: "blue"}}>계정 만들기</Link></MyP>
+        <MyP>이메일를 잊으셨나요?&nbsp;<Link to="/auth/findEmail" className="text-decoration-none" style={{color: "blue"}}>이메일 찾기</Link></MyP>
+        <MyP>비밀번호를 잊으셨나요?&nbsp;<Link to="/auth/resetPwd" className="text-decoration-none" style={{color: "blue"}}>비밀번호 변경</Link></MyP>
+      </LoginForm>
     </>
-  )
+  );
 }
-
-export default LoginPage
+export default KhLoginPage;
