@@ -25,7 +25,21 @@ public class MemberDao {
 	public int memberInsert(Map<String, Object> pMap) {
 		logger.info("memberInsert호출");
 		int result = 0;
+		result = sqlSessionTemplate.update("memberInsert",pMap);
+		return result;
+	}
 
+	public int memberUpdate(Map<String, Object> pMap) {
+		logger.info("memberUpdate호출");
+		int result = 0;
+		result = sqlSessionTemplate.update("memberUpdate",pMap);
+		return result;
+	}
+
+	public int memberDelete(Map<String, Object> pMap) {
+		logger.info("memberDelete호출");
+		int result = 0;
+		result = sqlSessionTemplate.delete("memberDelete",pMap);
 		return result;
 	}
 

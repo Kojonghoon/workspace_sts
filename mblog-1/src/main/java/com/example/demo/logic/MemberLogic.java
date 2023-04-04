@@ -36,4 +36,20 @@ public class MemberLogic {
 		mList = memberDao.memberList(pMap);
 		return mList;
 	}
+
+	public int memberUpdate(Map<String, Object> pMap) {
+		logger.info("memberUpdate호출");
+		int result = 0;
+		logger.info(pMap.toString());
+		result = memberDao.memberUpdate(pMap);
+		return result;
+	}
+
+	public int memberDelete(Map<String, Object> pMap) {
+		logger.info("memberDelete호출");
+		int result = 0;
+		logger.info(pMap.toString());
+		result = memberDao.memberDelete(pMap);
+		return result;
+	}
 }

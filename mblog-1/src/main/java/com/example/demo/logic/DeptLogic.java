@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.dao.DeptDao;
 import com.example.demo.vo.DeptVO;
 
+import lombok.Setter;
 @Service
 public class DeptLogic {
 	Logger logger = LoggerFactory.getLogger(DeptLogic.class);

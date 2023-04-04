@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo">
+	<select id="qnaList" parameterType="java.util.HashMap"
+		resultType="map">
+		select
+		q.qna_bno,
+		q.qna_title,
+		q.qna_content,
+		q.qna_type,
+		q.qna_secret,
+		q.qna_hit,
+		q.qna_date,
+		m.mem_name,
+		m.mem_no
+		from qna q, member230324 m
+		where q.mem_no = m.mem_no
+		<if test='qna_type!=null and !qna_type.equals("전체")'> <!-- KhMyFilter 조건 검색 시 사용 -->
+			AND q.qna_type = #{qna_type}
+		</if>
+		<if test='mem_no!=null'> <!-- 회원 고유 번호별 조건 검색 시 사용 -->
+			AND m.mem_no = #{mem_no}
+		</if>
+		<if test='qna_bno!=null'> <!-- 글번호 조건 검색 시 사용 -->
+			AND q.qna_bno = #{qna_bno}
+		</if>
+		<if test='content!=null'>
+			<choose>
+				<when test='condition!=null and condition.equals("제목")'>
+					AND qna_title LIKE '%'||#{content}||'%'
+				</when>
+				<when test='condition!=null and condition.equals("내용")'>
+					AND qna_content LIKE '%'||#{content}||'%'
+				</when>
+				<when test='condition!=null and condition.equals("작성자")'>
+					AND mem_name LIKE '%'||#{content}||'%'
+				</when>
+			</choose>
+		</if>
+	</select>
+
+	<!-- @RequestParam - Map 타입이 올 수 있다 - GET방식 요청 - 요청 header담김 - 인터셉트 - 캐시에 
+		있는 정보가 다시 출력 될 수 있다. : 문제점 : 노출 URL - 보안취약- 조회 @RequestBody - POST방식 요청 - 
+		단위테스트 불가함 - 그러니까 postman으로 테스트 가능 : VO Map 원시형 타입 모두 가능함 질문해보기 mem_no는 어디서 
+		가져오나요? 인증을 어디서 하나요? -APp.jsx 의 useEffet가 qna_type 즉 질문타입은 상수로 양도를 줌 qna_secret 
+		에는 비번을 입력 받음 비번이 널이면 공개, 널이 아니면 비공개 처리 가능한가? 생각해볼 문제 화면에서 가져올 컬럼의 종류는 몇가지 
+		인가요? 세션이나 쿠키에서 또는 세션스토리지에서 가져와야 하는 컬럼이 있을까요? 상수로 넣을 수 있는 (또는 넣어야 하는) 컬럼이 
+		존재하나요? 만일 존재한다면 어떤 컬럼인지 말해 보세요 하나 더 작성자는 이렵 받도록 화면을 그려야 할까요? 아님 자동으로 결정할 
+		수 있는 건가요? -->
+
+	<insert id="qnaInsert" parameterType="map"
+		useGeneratedKeys="true" keyColumn="qna_bno" keyProperty="qna_bno">
+		INSERT INTO
+		qna(qna_bno,
+		mem_no, qna_title
+		,qna_content, qna_type, qna_secret
+		,qna_hit, qna_date)
+		VALUES(qna_seq.nextval, #{mem_no}, #{qna_title}
+		,
+		#{qna_content}, #{qna_type},
+		#{qna_secret}
+		,#{qna_hit},
+		to_char(sysdate,'YYYY-MM-DD'))
+	</insert>
+
+
+	<!-- =================================================== -->
+	<select id="fileList" parameterType="map" resultType="map">
+		SELECT
+		file_name, file_size
+		FROM mblog_file
+		WHERE qna_bno=#{qna_bno}
+	</select>
+	
+	<insert id="fileInsert" parameterType="map">
+		INSERT INTO
+		mblog_file(file_no,
+		file_path,
+		file_name,
+		file_size)
+		VALUES(mblog_file_seq.nextval,
+		#{file_path},
+		#{file_name},
+		#{file_size})
+	</insert>
+	
+	<update id="fileUpdate" parameterType="list">
+		<foreach collection="list" item="item" separator=";"
+			open="DECLARE BEGIN" close="; END;">
+			UPDATE MBLOG_FILE
+			SET board_type = 'qna',
+			qna_bno=#{item.qna_bno}
+			WHERE file_name =LTRIM(#{item.file_name})
+		</foreach>
+	</update>
+
+</mapper>
